@@ -53,6 +53,11 @@ jobs:
         run: |
           mkdir -p _site
           cp -r index.html assets data companies.json topics.json .nojekyll _site/
+          # __BUILD__ keeps local static serving working; the deployed HTML pins assets to this commit.
+          sha="${GITHUB_SHA::7}"
+          sed -i "s/__BUILD__/${sha}/g" _site/index.html
+          grep -q "assets/app.js?v=${sha}" _site/index.html
+          grep -q "assets/style.css?v=${sha}" _site/index.html
 
       - uses: actions/configure-pages@v5
 
