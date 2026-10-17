@@ -24,6 +24,8 @@ from pathlib import Path
 
 import requests
 
+import jobs_sources as JS
+
 ROOT = Path(__file__).resolve().parent.parent
 COMPANIES = ROOT / "companies.json"
 TOPICS = ROOT / "topics.json"
@@ -176,6 +178,70 @@ def fetch_quote(ticker: str) -> dict:
     }
 
 
+# ---------------------------------------------------------------- jobs
+JOBS_PER_COMPANY = 20
+
+
+def _get_json(url, method="GET", params=None, json=None, data=None, headers=None):
+    last = None
+    for i in range(3):
+        try:
+            r = SESSION.request(method, url, params=params, json=json, data=data,
+                                headers={"Accept": "application/json", **(headers or {})}, timeout=25)
+            if r.status_code in (429, 500, 502, 503, 504):
+                raise requests.HTTPError(f"HTTP {r.status_code}")
+            r.raise_for_status()
+            return r.json()
+        except Exception as e:  # noqa: BLE001
+            last = e
+            time.sleep(1.5 * (i + 1))
+    raise last
+
+
+def _get_text(url):
+    r = get(url)
+    r.raise_for_status()
+    return r.text
+
+
+def _post_text(url, data=None, headers=None):
+    r = SESSION.post(url, data=data, headers=headers or {}, timeout=25)
+    r.raise_for_status()
+    return r.text
+
+
+SOURCES = {
+    "workday": lambda c, n: JS.workday(_get_json, c, n),
+    "eightfold": lambda c, n: JS.eightfold(_get_json, c, n),
+    "amd": lambda c, n: JS.amd(_get_json, c, n),
+    "asml_sitemap": lambda c, n: JS.asml_sitemap(_get_text, c, n),
+    "samsung_kr": lambda c, n: JS.samsung_kr(_post_text, c, n),
+    "lg_careers": lambda c, n: JS.lg_careers(_get_json, c, n),
+    "sk_careers": lambda c, n: JS.sk_careers(lambda url, data=None, headers=None: _get_json(url, "POST", data=data, headers=headers), c, n),
+}
+
+
+def fetch_jobs(company: dict):
+    """반환: (jobs, errors, live_sources)"""
+    items, errors, live = [], [], []
+    for cfg in company.get("jobs", []):
+        typ = cfg.get("type")
+        try:
+            got = SOURCES[typ](cfg, JOBS_PER_COMPANY)
+            items += got
+            live.append(typ)
+        except Exception as e:  # noqa: BLE001
+            errors.append(f"jobs {typ}{'/' + cfg.get('site', '') if cfg.get('site') else ''}: {str(e)[:120]}")
+    seen, out = set(), []
+    # 게시일 최신순, 게시일 없는 공고는 뒤로
+    for j in sorted(items, key=lambda x: (1 if x.get("posted") else 0, x.get("posted") or ""), reverse=True):
+        if not j.get("title") or j["link"] in seen:
+            continue
+        seen.add(j["link"])
+        out.append(j)
+    return out[:JOBS_PER_COMPANY], errors, live
+
+
 # ---------------------------------------------------------------- main
 def process(company: dict, prev: dict) -> dict:
     out = {k: v for k, v in company.items()}
@@ -199,6 +265,17 @@ def process(company: dict, prev: dict) -> dict:
     else:
         out["quote"] = None
 
+    if company.get("jobs"):
+        jobs, jerr, live = fetch_jobs(company)
+        if live:
+            out["jobs"], out["jobs_live"] = jobs, True
+        else:
+            out["jobs"], out["jobs_live"], out["jobs_stale"] = old.get("jobs", []), bool(old.get("jobs")), True
+        out["errors"] += jerr
+    else:
+        out["jobs"], out["jobs_live"] = [], False
+    out.pop("jobs_cfg", None)
+
     alts = []
     for t in company.get("alt_tickers", []):
         try:
@@ -210,7 +287,7 @@ def process(company: dict, prev: dict) -> dict:
     out["alt_quotes"] = alts
 
     status = "OK" if not out["errors"] else "WARN " + "; ".join(out["errors"])
-    log(f"[{company['id']:<11}] news={len(out['news']):>2} "
+    log(f"[{company['id']:<11}] news={len(out['news']):>2} jobs={len(out['jobs']):>2} "
         f"price={out['quote'] and out['quote'].get('price')} {status}")
     return out
 
@@ -218,6 +295,8 @@ def process(company: dict, prev: dict) -> dict:
 def main() -> int:
     cfg = json.loads(COMPANIES.read_text(encoding="utf-8"))
     EXCLUDE[:] = [x.lower() for x in cfg.get("news_exclude", [])]
+    global JOBS_PER_COMPANY
+    JOBS_PER_COMPANY = cfg.get("jobs_per_company", JOBS_PER_COMPANY)
     EXCLUDE_SOURCES.update(x.lower() for x in cfg.get("news_exclude_sources", []))
     prev = {}
     if OUT.exists():
@@ -253,7 +332,9 @@ def main() -> int:
         "segments": cfg["segments"],
         "companies": results,
         "topics": topics_out,
-        "stats": {"companies": len(results), "quotes_ok": ok_quotes, "news_ok": ok_news},
+        "stats": {"companies": len(results), "quotes_ok": ok_quotes, "news_ok": ok_news,
+                  "jobs_live": sum(1 for r in results if r.get("jobs_live") and not r.get("jobs_stale")),
+                  "jobs_total": sum(len(r.get("jobs") or []) for r in results)},
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     tmp = OUT.with_suffix(".tmp")

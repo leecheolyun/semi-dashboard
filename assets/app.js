@@ -1,7 +1,7 @@
 (() => {
   "use strict";
   const $ = (s) => document.querySelector(s);
-  const state = { view: "companies", topic: "all", seg: "all", region: "all", q: "", sort: "default", data: null };
+  const state = { view: "companies", topic: "all", jobCo: "all", jobLoc: "", jobLimit: 60, seg: "all", region: "all", q: "", sort: "default", data: null };
   const REGION = { all: "전체", KR: "국내", GLOBAL: "해외" };
   const LANG_REGION = { ko: "KR", en: "GLOBAL" };
   const CUR = { KRW: "원", USD: "$", JPY: "¥", TWD: "NT$", EUR: "€" };
@@ -91,7 +91,8 @@
         <div class="cmeta" style="margin-top:3px"><span class="badge ${c.region === "KR" ? "kr" : ""}">${REGION[c.region]}</span>${c.ticker ? `<span class="badge">${esc(c.ticker)}</span>` : ""}${q && q.exchange ? `<span>${esc(q.exchange)}</span>` : ""}</div>
       </div></div>
       ${priceBlock}${alts}${stale}
-      ${news.length ? `<ul class="news">${first}</ul>${rest ? `<details><summary>뉴스 ${news.length - 4}건 더 보기</summary><ul class="news">${rest}</ul></details>` : ""}` : `<div class="note">최근 뉴스 없음</div>`}
+      ${news.length ? `<ul class="news">${first}</ul>${rest ? `<details><summary><span class="more">뉴스 ${news.length - 4}건 더 보기 ▾</span><span class="less">접기 ▴</span></summary><ul class="news">${rest}</ul></details>` : ""}` : `<div class="note">최근 뉴스 없음</div>`}
+      <div class="card-foot">${(c.jobs || []).length ? `<button class="linkbtn" data-jobco="${esc(c.id)}">채용공고 ${c.jobs.length}건 →</button>` : `<span class="muted">채용 피드 없음</span>`}${c.careers_url ? `<a href="${esc(c.careers_url)}" target="_blank" rel="noopener">공식 채용 페이지 ↗</a>` : ""}</div>
     </article>`;
   }
 
@@ -188,17 +189,72 @@
       : `<li class="empty">조건에 맞는 뉴스가 없습니다.</li>`;
   }
 
+  const JOB_KW = ["기판", "substrate", "FC-BGA", "packaging", "패키징", "process engineer", "equipment", "yield", "신입", "intern"];
+  const segName = (id) => (state.data.segments.find((s) => s.id === id) || {}).name || "";
+  const dateLabel = (d) => {
+    if (!d) return "";
+    const days = Math.round((Date.now() - new Date(d + "T00:00:00+09:00").getTime()) / 86400000);
+    if (days <= 0) return '<span class="new">오늘</span>';
+    if (days === 1) return '<span class="new">어제</span>';
+    if (days < 30) return `${days}일 전`;
+    return d;
+  };
+
+  function jobCompanies() {
+    return state.data.companies.filter((c) => (state.seg === "all" || c.segment === state.seg) && (state.region === "all" || c.region === state.region));
+  }
+
+  function renderJobs() {
+    const cos = jobCompanies();
+    const sel = $("#jobCo");
+    const withJobs = state.data.companies.filter((c) => (c.jobs || []).length);
+    sel.innerHTML = `<option value="all">전체 기업 (${withJobs.length}개 피드)</option>` + state.data.segments.map((sg) =>
+      `<optgroup label="${esc(sg.name)}">${state.data.companies.filter((c) => c.segment === sg.id).map((c) => `<option value="${esc(c.id)}" ${state.jobCo === c.id ? "selected" : ""}>${esc(c.name)} ${(c.jobs || []).length ? `(${c.jobs.length})` : "· 링크만"}</option>`).join("")}</optgroup>`).join("");
+    $("#jobKw").innerHTML = `<span class="lbl">빠른 검색</span>` + JOB_KW.map((k) => `<button class="chip" data-kw="${esc(k)}" aria-pressed="${state.q.toLowerCase() === k.toLowerCase()}">${esc(k)}</button>`).join("");
+    const q = state.q.toLowerCase(), loc = state.jobLoc.toLowerCase();
+    const rows = [];
+    for (const c of cos) {
+      if (state.jobCo !== "all" && c.id !== state.jobCo) continue;
+      for (const j of c.jobs || []) {
+        if (q && !`${j.title} ${j.location} ${j.kind || ""} ${c.name} ${c.name_en}`.toLowerCase().includes(q)) continue;
+        if (loc && !(j.location || "").toLowerCase().includes(loc)) continue;
+        rows.push({ ...j, c });
+      }
+    }
+    // 게시일 있는 공고를 최신순으로, 게시일이 없는 공고(마감일만 제공)는 뒤에 마감 임박순
+    rows.sort((a, b) => (a.posted ? 0 : 1) - (b.posted ? 0 : 1) || (b.posted || "").localeCompare(a.posted || "") || (a.deadline || "9").localeCompare(b.deadline || "9"));
+    const shown = rows.slice(0, state.jobLimit);
+    $("#jobCount").textContent = `${rows.length}건 · 최신순${rows.length > shown.length ? ` · ${shown.length}건 표시` : ""}`;
+    $("#jobList").innerHTML = rows.length ? `<div class="job-row head" role="row"><span>공고</span><span>기업</span><span>근무지</span><span>게시 / 마감</span></div>` + shown.map((j) => `
+      <div class="job-row" role="row">
+        <div><a class="jt" href="${esc(j.link)}" target="_blank" rel="noopener">${esc(j.title)}</a>
+          <div class="jk">${esc(j.source)}${j.kind ? " · " + esc(j.kind) : ""}${j.title_from_url ? " · 제목은 URL 기준" : ""}</div></div>
+        <div><button class="tag" data-jobco="${esc(j.c.id)}">${esc(j.c.name)}</button> <span class="muted" style="font-size:11px">${esc(segName(j.c.segment))}</span></div>
+        <div class="jl">${esc(j.location || "-")}</div>
+        <div class="jd">${j.posted ? (j.title_from_url ? `갱신 ${dateLabel(j.posted)}` : j.posted_approx ? `${dateLabel(j.posted)} 이전` : dateLabel(j.posted)) : ""}${j.deadline ? `${j.posted ? "<br>" : ""}마감 ${esc(j.deadline)}` : ""}${!j.posted && !j.deadline ? "-" : ""}</div>
+      </div>`).join("") + (rows.length > shown.length ? `<button class="job-more" data-jobmore="1">더 보기 (${rows.length - shown.length}건 남음)</button>` : "")
+      : `<div class="empty">조건에 맞는 공고가 없습니다. 아래 공식 채용 페이지를 확인하세요.</div>`;
+    const noFeed = cos.filter((c) => !(c.jobs || []).length && (state.jobCo === "all" || c.id === state.jobCo));
+    $("#careerCount").textContent = `자동 수집 피드가 없는 기업 ${noFeed.length}곳 — 공식 채용 페이지에서 확인`;
+    $("#careerLinks").innerHTML = noFeed.map((c) => `<div class="career"><div><div class="cn">${esc(c.name)}</div><div class="cm">${esc(segName(c.segment))} · ${REGION[c.region]}</div></div>
+      <a class="go" href="${esc(c.careers_url || "#")}" target="_blank" rel="noopener">채용 페이지 ↗</a></div>`).join("") || `<div class="muted">해당 없음</div>`;
+  }
+
   function render() {
     document.body.dataset.view = state.view;
     $("#tabCompanies").setAttribute("aria-selected", state.view === "companies");
     $("#tabNews").setAttribute("aria-selected", state.view === "news");
+    $("#tabJobs").setAttribute("aria-selected", state.view === "jobs");
+    $("#jobsTotal").textContent = state.data.companies.reduce((a, c) => a + (c.jobs || []).length, 0) || "";
     $("#topicTotal").textContent = new Set((state.data.topics || []).flatMap((t) => (t.news || []).map((n) => n.title.replace(/\W/g, "").toLowerCase().slice(0, 60)))).size || "";
     const list = state.data.companies.filter(matches);
     if (state.view === "news") { renderChips(); renderTopics(); }
+    else if (state.view === "jobs") { renderChips(); renderJobs(); }
     else { renderChips(); renderSummary(); renderCompanies(list); renderFeed(list); }
     const p = new URLSearchParams();
     if (state.view !== "companies") p.set("view", state.view);
     if (state.view === "news" && state.topic !== "all") p.set("topic", state.topic);
+    if (state.view === "jobs" && state.jobCo !== "all") p.set("co", state.jobCo);
     if (state.seg !== "all") p.set("seg", state.seg);
     if (state.region !== "all") p.set("region", state.region);
     if (state.q) p.set("q", state.q);
@@ -206,8 +262,12 @@
   }
 
   document.addEventListener("click", (e) => {
-    const t = e.target.closest("[data-seg],[data-region],[data-view],[data-topic],.tag");
+    // body[data-view] 같은 비-버튼 조상과 매칭되지 않도록 버튼으로만 한정
+    const t = e.target.closest("button[data-seg],button[data-region],button[data-view],button[data-topic],button[data-jobco],button[data-kw],button[data-jobmore],button.tag");
     if (!t) return;
+    if (t.dataset.jobmore) { state.jobLimit += 60; render(); return; }
+    if (t.dataset.jobco) { state.view = "jobs"; state.jobCo = t.dataset.jobco; state.seg = "all"; state.region = "all"; state.jobLimit = 60; window.scrollTo(0, 0); render(); return; }
+    if (t.dataset.kw) { state.q = state.q.toLowerCase() === t.dataset.kw.toLowerCase() ? "" : t.dataset.kw; $("#q").value = state.q; state.jobLimit = 60; render(); return; }
     if (t.dataset.view) { state.view = t.dataset.view; window.scrollTo(0, 0); }
     else if (t.dataset.topic) { state.view = "news"; state.topic = t.dataset.topic; }
     else if (t.classList.contains("tag")) { state.q = t.dataset.q; $("#q").value = state.q; }
@@ -217,6 +277,9 @@
   });
   let timer;
   $("#q").addEventListener("input", (e) => { clearTimeout(timer); timer = setTimeout(() => { state.q = e.target.value.trim(); render(); }, 150); });
+  $("#jobCo").addEventListener("change", (e) => { state.jobCo = e.target.value; state.jobLimit = 60; render(); });
+  let ltimer;
+  $("#jobLoc").addEventListener("input", (e) => { clearTimeout(ltimer); ltimer = setTimeout(() => { state.jobLoc = e.target.value.trim(); render(); }, 150); });
   $("#sortSel").addEventListener("change", (e) => { state.sort = e.target.value; render(); });
   $("#themeBtn").addEventListener("click", () => {
     const root = document.documentElement;
@@ -226,7 +289,7 @@
   });
 
   const p = new URLSearchParams(location.search);
-  state.view = p.get("view") === "news" ? "news" : "companies"; state.topic = p.get("topic") || "all";
+  state.view = ["news", "jobs"].includes(p.get("view")) ? p.get("view") : "companies"; state.jobCo = p.get("co") || "all"; state.topic = p.get("topic") || "all";
   state.seg = p.get("seg") || "all"; state.region = p.get("region") || "all"; state.q = p.get("q") || "";
   $("#q").value = state.q;
 
@@ -235,7 +298,7 @@
     .then((d) => {
       state.data = d;
       const s = d.stats || {};
-      $("#updated").textContent = `업데이트 ${kst(d.generated_at)} · 기업 ${s.companies} · 시세 ${s.quotes_ok} · 뉴스 ${s.news_ok}`;
+      $("#updated").textContent = `업데이트 ${kst(d.generated_at)} · 기업 ${s.companies} · 시세 ${s.quotes_ok} · 뉴스 ${s.news_ok}${s.jobs_total != null ? ` · 채용 ${s.jobs_total}` : ""}`;
       render();
     })
     .catch((err) => {

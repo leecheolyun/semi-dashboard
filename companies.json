@@ -55,7 +55,14 @@
       "segment": "substrate",
       "region": "KR",
       "ticker": "009150.KS",
-      "news_query": "삼성전기"
+      "news_query": "삼성전기",
+      "careers_url": "https://www.samsungcareers.com/hr/",
+      "jobs": [
+        {
+          "type": "samsung_kr",
+          "company": "삼성전기"
+        }
+      ]
     },
     {
       "id": "lginnotek",
@@ -64,7 +71,14 @@
       "segment": "substrate",
       "region": "KR",
       "ticker": "011070.KS",
-      "news_query": "LG이노텍"
+      "news_query": "LG이노텍",
+      "careers_url": "https://careers.lg.com/apply",
+      "jobs": [
+        {
+          "type": "lg_careers",
+          "company_code": "LGIT"
+        }
+      ]
     },
     {
       "id": "daeduck",
@@ -73,7 +87,8 @@
       "segment": "substrate",
       "region": "KR",
       "ticker": "353200.KS",
-      "news_query": "대덕전자"
+      "news_query": "대덕전자",
+      "careers_url": "https://www.daeduck.com/ko/content/recruitmentinfo.do"
     },
     {
       "id": "simmtech",
@@ -82,7 +97,8 @@
       "segment": "substrate",
       "region": "KR",
       "ticker": "222800.KQ",
-      "news_query": "심텍 기판"
+      "news_query": "심텍 기판",
+      "careers_url": "https://www.simmtech.com/recruit/ordinary.aspx"
     },
     {
       "id": "isupetasys",
@@ -91,7 +107,8 @@
       "segment": "substrate",
       "region": "KR",
       "ticker": "007660.KS",
-      "news_query": "이수페타시스"
+      "news_query": "이수페타시스",
+      "careers_url": "https://recruit.isu.co.kr"
     },
     {
       "id": "korcirc",
@@ -100,7 +117,8 @@
       "segment": "substrate",
       "region": "KR",
       "ticker": "007810.KS",
-      "news_query": "코리아써키트"
+      "news_query": "코리아써키트",
+      "careers_url": "http://recruit.kcg.co.kr/"
     },
     {
       "id": "haesungds",
@@ -109,7 +127,8 @@
       "segment": "substrate",
       "region": "KR",
       "ticker": "195870.KS",
-      "news_query": "해성디에스"
+      "news_query": "해성디에스",
+      "careers_url": "https://www.haesungds.com/recruit/announcement.php"
     },
     {
       "id": "ibiden",
@@ -118,7 +137,8 @@
       "segment": "substrate",
       "region": "GLOBAL",
       "ticker": "4062.T",
-      "news_query": "Ibiden"
+      "news_query": "Ibiden",
+      "careers_url": "https://ibiden-recruit.jp/"
     },
     {
       "id": "shinko",
@@ -128,7 +148,8 @@
       "region": "GLOBAL",
       "ticker": null,
       "news_query": "\"Shinko Electric\"",
-      "note": "2025년 JIC 인수로 상장폐지 (6967.T 시세 없음) · 뉴스만 표시"
+      "note": "2025년 JIC 인수로 상장폐지 (6967.T 시세 없음) · 뉴스만 표시",
+      "careers_url": "https://www.shinko.co.jp/recruit/"
     },
     {
       "id": "unimicron",
@@ -137,7 +158,8 @@
       "segment": "substrate",
       "region": "GLOBAL",
       "ticker": "3037.TW",
-      "news_query": "Unimicron"
+      "news_query": "Unimicron",
+      "careers_url": "https://www.unimicron.com/"
     },
     {
       "id": "nanyapcb",
@@ -146,7 +168,8 @@
       "segment": "substrate",
       "region": "GLOBAL",
       "ticker": "8046.TW",
-      "news_query": "\"Nan Ya PCB\" OR \"Nan Ya Printed Circuit\""
+      "news_query": "\"Nan Ya PCB\" OR \"Nan Ya Printed Circuit\"",
+      "careers_url": "https://www.nanyapcb.com.tw/"
     },
     {
       "id": "kinsus",
@@ -155,7 +178,8 @@
       "segment": "substrate",
       "region": "GLOBAL",
       "ticker": "3189.TW",
-      "news_query": "Kinsus"
+      "news_query": "Kinsus",
+      "careers_url": "https://www.kinsus.com.tw/en/html/join_kinsus/index"
     },
     {
       "id": "zhending",
@@ -164,7 +188,8 @@
       "segment": "substrate",
       "region": "GLOBAL",
       "ticker": "4958.TW",
-      "news_query": "\"Zhen Ding\""
+      "news_query": "\"Zhen Ding\"",
+      "careers_url": "https://www.zhending.com/"
     },
     {
       "id": "ats",
@@ -173,7 +198,8 @@
       "segment": "substrate",
       "region": "GLOBAL",
       "ticker": "ATS.VI",
-      "news_query": "\"AT&S\" substrate OR Austria"
+      "news_query": "\"AT&S\" substrate OR Austria",
+      "careers_url": "https://ats.net/en/careers/"
     },
     {
       "id": "ttm",
@@ -182,7 +208,16 @@
       "segment": "substrate",
       "region": "GLOBAL",
       "ticker": "TTMI",
-      "news_query": "\"TTM Technologies\""
+      "news_query": "\"TTM Technologies\"",
+      "careers_url": "https://ttmtech.wd5.myworkdayjobs.com/jobs",
+      "jobs": [
+        {
+          "type": "workday",
+          "host": "ttmtech.wd5.myworkdayjobs.com",
+          "tenant": "ttmtech",
+          "site": "jobs"
+        }
+      ]
     },
     {
       "id": "samsung",
@@ -191,7 +226,20 @@
       "segment": "memory",
       "region": "KR",
       "ticker": "005930.KS",
-      "news_query": "삼성전자 반도체"
+      "news_query": "삼성전자 반도체",
+      "careers_url": "https://www.samsungcareers.com/hr/",
+      "jobs": [
+        {
+          "type": "samsung_kr",
+          "company": "삼성전자"
+        },
+        {
+          "type": "workday",
+          "host": "sec.wd3.myworkdayjobs.com",
+          "tenant": "sec",
+          "site": "Samsung_Careers"
+        }
+      ]
     },
     {
       "id": "skhynix",
@@ -200,7 +248,17 @@
       "segment": "memory",
       "region": "KR",
       "ticker": "000660.KS",
-      "news_query": "SK하이닉스"
+      "news_query": "SK하이닉스",
+      "careers_url": "https://www.skcareers.com/Recruit",
+      "jobs": [
+        {
+          "type": "sk_careers",
+          "corp": [
+            "SK hynix",
+            "SK하이닉스"
+          ]
+        }
+      ]
     },
     {
       "id": "micron",
@@ -209,7 +267,16 @@
       "segment": "memory",
       "region": "GLOBAL",
       "ticker": "MU",
-      "news_query": "\"Micron Technology\""
+      "news_query": "\"Micron Technology\"",
+      "careers_url": "https://micron.wd1.myworkdayjobs.com/External",
+      "jobs": [
+        {
+          "type": "workday",
+          "host": "micron.wd1.myworkdayjobs.com",
+          "tenant": "micron",
+          "site": "External"
+        }
+      ]
     },
     {
       "id": "intel",
@@ -218,7 +285,16 @@
       "segment": "memory",
       "region": "GLOBAL",
       "ticker": "INTC",
-      "news_query": "Intel chip"
+      "news_query": "Intel chip",
+      "careers_url": "https://intel.wd1.myworkdayjobs.com/External",
+      "jobs": [
+        {
+          "type": "workday",
+          "host": "intel.wd1.myworkdayjobs.com",
+          "tenant": "intel",
+          "site": "External"
+        }
+      ]
     },
     {
       "id": "tsmc",
@@ -230,7 +306,8 @@
       "alt_tickers": [
         "2330.TW"
       ],
-      "news_query": "TSMC"
+      "news_query": "TSMC",
+      "careers_url": "https://careers.tsmc.com/"
     },
     {
       "id": "nvidia",
@@ -239,7 +316,16 @@
       "segment": "foundry",
       "region": "GLOBAL",
       "ticker": "NVDA",
-      "news_query": "Nvidia"
+      "news_query": "Nvidia",
+      "careers_url": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite",
+      "jobs": [
+        {
+          "type": "workday",
+          "host": "nvidia.wd5.myworkdayjobs.com",
+          "tenant": "nvidia",
+          "site": "NVIDIAExternalCareerSite"
+        }
+      ]
     },
     {
       "id": "amd",
@@ -248,7 +334,13 @@
       "segment": "foundry",
       "region": "GLOBAL",
       "ticker": "AMD",
-      "news_query": "AMD chip"
+      "news_query": "AMD chip",
+      "careers_url": "https://careers.amd.com/careers-home/jobs",
+      "jobs": [
+        {
+          "type": "amd"
+        }
+      ]
     },
     {
       "id": "qualcomm",
@@ -257,7 +349,15 @@
       "segment": "foundry",
       "region": "GLOBAL",
       "ticker": "QCOM",
-      "news_query": "Qualcomm"
+      "news_query": "Qualcomm",
+      "careers_url": "https://careers.qualcomm.com/careers",
+      "jobs": [
+        {
+          "type": "eightfold",
+          "base": "https://careers.qualcomm.com",
+          "domain": "qualcomm.com"
+        }
+      ]
     },
     {
       "id": "asml",
@@ -266,7 +366,13 @@
       "segment": "equipment",
       "region": "GLOBAL",
       "ticker": "ASML",
-      "news_query": "ASML"
+      "news_query": "ASML",
+      "careers_url": "https://www.asml.com/en/careers/find-your-job",
+      "jobs": [
+        {
+          "type": "asml_sitemap"
+        }
+      ]
     },
     {
       "id": "amat",
@@ -275,7 +381,16 @@
       "segment": "equipment",
       "region": "GLOBAL",
       "ticker": "AMAT",
-      "news_query": "\"Applied Materials\""
+      "news_query": "\"Applied Materials\"",
+      "careers_url": "https://careers.appliedmaterials.com/careers",
+      "jobs": [
+        {
+          "type": "workday",
+          "host": "amat.wd1.myworkdayjobs.com",
+          "tenant": "amat",
+          "site": "External"
+        }
+      ]
     },
     {
       "id": "lam",
@@ -284,7 +399,15 @@
       "segment": "equipment",
       "region": "GLOBAL",
       "ticker": "LRCX",
-      "news_query": "\"Lam Research\""
+      "news_query": "\"Lam Research\"",
+      "careers_url": "https://careers.lamresearch.com/careers",
+      "jobs": [
+        {
+          "type": "eightfold",
+          "base": "https://careers.lamresearch.com",
+          "domain": "lamresearch.com"
+        }
+      ]
     },
     {
       "id": "tel",
@@ -293,7 +416,40 @@
       "segment": "equipment",
       "region": "GLOBAL",
       "ticker": "8035.T",
-      "news_query": "\"Tokyo Electron\""
+      "news_query": "\"Tokyo Electron\"",
+      "careers_url": "https://www.tel.com/careers/",
+      "jobs": [
+        {
+          "type": "workday",
+          "host": "tel.wd3.myworkdayjobs.com",
+          "tenant": "tel",
+          "site": "TET_Career"
+        },
+        {
+          "type": "workday",
+          "host": "tel.wd3.myworkdayjobs.com",
+          "tenant": "tel",
+          "site": "TEE_Careers"
+        },
+        {
+          "type": "workday",
+          "host": "tel.wd3.myworkdayjobs.com",
+          "tenant": "tel",
+          "site": "TES_Career"
+        },
+        {
+          "type": "workday",
+          "host": "tel.wd3.myworkdayjobs.com",
+          "tenant": "tel",
+          "site": "TMY_Career"
+        },
+        {
+          "type": "workday",
+          "host": "tel.wd3.myworkdayjobs.com",
+          "tenant": "tel",
+          "site": "TSI_Career"
+        }
+      ]
     },
     {
       "id": "hanmi",
@@ -302,7 +458,9 @@
       "segment": "equipment",
       "region": "KR",
       "ticker": "042700.KS",
-      "news_query": "한미반도체"
+      "news_query": "한미반도체",
+      "careers_url": "https://www.hanmisemi.com/"
     }
-  ]
+  ],
+  "jobs_per_company": 20
 }

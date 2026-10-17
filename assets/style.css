@@ -122,8 +122,10 @@ details summary::-webkit-details-marker{display:none}
 .tab{font:inherit;font-size:15px;font-weight:600;background:none;border:0;color:var(--muted);padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
 .tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--accent)}
 .tab-n{font-size:11px;font-weight:600;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:1px 7px;margin-left:4px}
-body[data-view="companies"] .news-only{display:none}
-body[data-view="news"] .co-only{display:none}
+body:not([data-view="companies"]) .co-only{display:none}
+body:not([data-view="news"]) .news-only{display:none}
+body:not([data-view="jobs"]) .jobs-only{display:none}
+body[data-view="news"] .not-news{display:none}
 .topic-news{padding:6px 0 10px}
 .tn-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .tn-list li{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
@@ -133,3 +135,33 @@ body[data-view="news"] .co-only{display:none}
 .tag.topic{background:var(--panel-2);color:var(--text)}
 .feed-more{display:block;text-align:center;font-size:12.5px;color:var(--accent);padding:10px;border-top:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-bottom:0;font-family:inherit;width:100%}
 @media (max-width:900px){.tn-list{grid-template-columns:1fr}}
+
+/* ---- 채용정보 ---- */
+#jobCo{max-width:220px}
+.search.loc{flex:0 1 260px;min-width:180px}
+.chips.kw{margin:2px 0 12px}
+.chips.kw .chip{font-size:12px;padding:4px 10px}
+.chips.kw .lbl{font-size:12px;color:var(--muted);align-self:center;margin-right:2px}
+.job-table{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.job-row{display:grid;grid-template-columns:minmax(0,1fr) 170px 200px 110px;gap:12px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line)}
+.job-row:last-child{border-bottom:0}
+.job-row.head{font-size:12px;color:var(--muted);background:var(--panel-2);padding:8px 16px}
+.job-row .jt{font-weight:600;font-size:14px;line-height:1.4}
+.job-row .jk{font-size:11.5px;color:var(--muted);margin-top:2px}
+.job-row .jl,.job-row .jd{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.job-row .jd .new{color:var(--up);font-weight:700}
+.job-more{display:block;width:100%;padding:12px;border:0;border-top:1px solid var(--line);background:none;color:var(--accent);font:inherit;font-size:13px;cursor:pointer}
+.career-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.career{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:var(--shadow)}
+.career .cn{font-weight:600}
+.career .cm{font-size:12px;color:var(--muted)}
+.career a.go{font-size:12.5px;color:var(--accent);white-space:nowrap}
+.card-foot{display:flex;justify-content:space-between;align-items:center;font-size:12px;border-top:1px solid var(--line);padding-top:8px;margin-top:auto}
+.card-foot a{color:var(--muted)}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--accent);cursor:pointer}
+@media (max-width:900px){
+  .job-row{grid-template-columns:1fr;gap:3px}
+  .job-row.head{display:none}
+  .job-row .jl,.job-row .jd{font-size:12px}
+}
+details .less{display:none} details[open] .more{display:none} details[open] .less{display:inline}
