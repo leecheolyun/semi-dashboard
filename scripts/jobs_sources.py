@@ -11,7 +11,10 @@
   lg_careers     {"type":"lg_careers","company_code":"LGIT"}  careers.lg.com 공개 공고 목록
   sk_careers     {"type":"sk_careers","corp":"SK hynix"}  skcareers.com 공개 공고 목록
 
-각 함수는 dict 리스트를 반환: title, location, posted(YYYY-MM-DD|None), posted_approx, deadline, link, source
+각 함수는 현재 열린 공고만 dict 리스트로 반환한다.
+title, location, posted(YYYY-MM-DD|None), posted_approx, deadline, link, source.
+마감일이 없거나 서울 기준 오늘(포함) 이후인 공고만 남기고, 소스가 마감·종료로
+표시하거나 목록에서 빠진 공고는 넣지 않는다.
 """
 from __future__ import annotations
 
@@ -26,6 +29,24 @@ KST = timezone(timedelta(hours=9))
 
 def _today():
     return datetime.now(timezone.utc).date()
+
+
+def today_kst():
+    return datetime.now(KST).date()
+
+
+def is_open(job, today=None):
+    """마감일이 없으면 유지. 마감일이 서울 오늘보다 앞이면 제외(오늘은 유지)."""
+    if job.get("closed"):
+        return False
+    dl = (job.get("deadline") or "")[:10]
+    if not dl:
+        return True
+    try:
+        day = datetime.strptime(dl, "%Y-%m-%d").date()
+    except ValueError:
+        return True
+    return day >= (today or today_kst())
 
 
 def _job(title, link, source, location="", posted=None, approx=False, deadline=None, extra=None):
@@ -56,6 +77,7 @@ def _wd_posted(txt: str):
 
 
 def workday(get_json, cfg, limit):
+    # 공개 /jobs 검색은 지금 게시 중인 공고만 준다. 목록에서 빠지면 마감으로 본다.
     host, tenant, site = cfg["host"], cfg["tenant"], cfg["site"]
     url = f"https://{host}/wday/cxs/{tenant}/{site}/jobs"
     out = []
@@ -65,9 +87,16 @@ def workday(get_json, cfg, limit):
                      headers={"Accept-Language": "en-US"})  # postedOn 문구를 영어로 받아 날짜 계산
         posts = j.get("jobPostings") or []
         for p in posts:
+            if p.get("posted") is False or p.get("canApply") is False:
+                continue
             posted, approx = _wd_posted(p.get("postedOn", ""))
+            deadline = None
+            for key in ("endDate", "endDateOn", "closeDate"):
+                if p.get(key):
+                    deadline = str(p[key])[:10]
+                    break
             out.append(_job(p.get("title"), f"https://{host}/{site}{p.get('externalPath', '')}", "Workday",
-                            p.get("locationsText", ""), posted, approx))
+                            p.get("locationsText", ""), posted, approx, deadline))
         if len(posts) < 20:
             break
     return out
@@ -82,11 +111,17 @@ def eightfold(get_json, cfg, limit):
                                                           "start": start, "sort_by": "timestamp"})
         pos = (j.get("data") or {}).get("positions") or []
         for p in pos:
+            # 검색 API 는 현재 게시 공고만 준다. 상태·마감 필드가 있으면 그것으로 한 번 더 거른다.
+            status = str(p.get("status") or p.get("postingStatus") or "")
+            if status and re.search(r"clos|expir|filled|마감|종료|inactive|unposted", status, re.I):
+                continue
             ts = p.get("postedTs")
             posted = datetime.fromtimestamp(ts, timezone.utc).date().isoformat() if ts else None
+            end_ts = p.get("expiryTs") or p.get("endTs") or p.get("closeTs")
+            deadline = datetime.fromtimestamp(end_ts, KST).date().isoformat() if end_ts else None
             locs = p.get("standardizedLocations") or p.get("locations") or []
             loc = locs[0] + (f" 외 {len(locs) - 1}곳" if len(locs) > 1 else "") if locs else ""
-            out.append(_job(p.get("name"), base + p.get("positionUrl", ""), "Eightfold", loc, posted))
+            out.append(_job(p.get("name"), base + p.get("positionUrl", ""), "Eightfold", loc, posted, False, deadline))
         if len(pos) < 10:
             break
     return out
@@ -102,9 +137,16 @@ def amd(get_json, cfg, limit):
                      params={"page": page, "sortBy": "posted_date", "descending": "true", "internal": "false"})
         for it in j.get("jobs", []):
             d = it.get("data", {})
+            if d.get("applyable") is False:
+                continue
             posted = (d.get("posted_date") or "")[:10] or None
+            deadline = None
+            for key in ("close_date", "end_date", "expiration_date"):
+                if d.get(key):
+                    deadline = str(d[key])[:10]
+                    break
             out.append(_job(d.get("title"), f"https://careers.amd.com/careers-home/jobs/{d.get('slug')}",
-                            "careers.amd.com", d.get("full_location") or d.get("location_name"), posted))
+                            "careers.amd.com", d.get("full_location") or d.get("location_name"), posted, False, deadline))
     return out
 
 
@@ -139,8 +181,7 @@ def asml_sitemap(get_text, cfg, limit):
 
 
 # ------------------------------------------------------------------ 삼성 (samsungcareers.com)
-_SS_LI = re.compile(r'<a href="/#none"\s+data-value="([\d,]+)">\s*<p class="company">(.*?)</p>\s*'
-                    r'<h3 class="title">(.*?)</h3>.*?<span class="period">\s*(.*?)\s*</span>', re.S)
+_SS_CLOSED = re.compile(r"마감|종료|D\s*\+")
 
 
 def samsung_kr(post_text, cfg, limit):
@@ -152,9 +193,18 @@ def samsung_kr(post_text, cfg, limit):
                       headers={"Referer": "https://www.samsungcareers.com/hr/"})
         m = re.search(r'data-max="(\d+)"', h)
         maxp = int(m.group(1)) if m else 1
-        for seq, comp, title, period in _SS_LI.findall(h):
+        for li in re.findall(r"<li\b[^>]*>(.*?)</li>", h, re.S):
+            m = re.search(r'data-value="([\d,]+)".*?<p class="company">(.*?)</p>.*?<h3 class="title">(.*?)</h3>'
+                          r'.*?<span class="period">\s*(.*?)\s*</span>', li, re.S)
+            if not m:
+                continue
+            seq, comp, title, period = m.groups()
             comp = html.unescape(re.sub(r"\s+", " ", comp)).strip()
             if cfg.get("company") and cfg["company"] not in comp:
+                continue
+            flag_m = re.search(r'class="flag(?:\s+[^"]*)?"[^>]*>\s*([^<]+)', li)
+            flag = re.sub(r"\s+", " ", flag_m.group(1)).strip() if flag_m else ""
+            if _SS_CLOSED.search(flag) or _SS_CLOSED.search(period):
                 continue
             dates = re.findall(r"\d{4}\.\d{2}\.\d{2}", period)
             posted = dates[0].replace(".", "-") if dates else None
@@ -173,7 +223,13 @@ def lg_careers(get_json, cfg, limit):
                  headers={"Origin": "https://careers.lg.com", "Referer": "https://careers.lg.com/"})
     out = []
     for n in (j.get("data") or {}).get("jobNoticeList") or []:
-        dl = (n.get("recEndDateTime") or "")[:10].replace(".", "-") or None
+        status = (n.get("noticeStatus") or "").strip().upper()
+        status_name = n.get("noticeStatusName") or ""
+        if (status and status != "POSTING") or re.search(r"마감|종료", status_name):
+            continue
+        raw_end = n.get("recEndDateTime") or ""
+        dm = re.search(r"(\d{4})\D(\d{1,2})\D(\d{1,2})", raw_end)
+        dl = f"{int(dm.group(1)):04d}-{int(dm.group(2)):02d}-{int(dm.group(3)):02d}" if dm else None
         typ = " · ".join(x for x in (n.get("careerTypeName"), n.get("jobGroupName")) if x)
         out.append(_job(n.get("jobNoticeName"), f"https://careers.lg.com/apply/detail?id={n.get('jobNoticeId')}",
                         "careers.lg.com", n.get("workLocationName", ""), None, False, dl, {"kind": typ}))
@@ -203,6 +259,14 @@ def sk_careers(post_json, cfg, limit):
         corps = [corps] if isinstance(corps, str) else corps
         if corps and d.get("corpName", "").lower() not in {c.lower() for c in corps}:
             continue
+        remain = d.get("remainDay")
+        if isinstance(remain, str) and re.search(r"마감|종료", remain):
+            continue
+        try:
+            if remain is not None and str(remain).strip() != "" and int(remain) < 0:
+                continue
+        except (TypeError, ValueError):
+            pass
         out.append(_job(html.unescape(d.get("title", "")), f"https://www.skcareers.com/Recruit/Detail/{d.get('noticeID')}",
                         "skcareers.com", d.get("workingArea", ""), _sk_date(d.get("start")), False,
                         _sk_date(d.get("end")), {"kind": d.get("jobRole", "")}))

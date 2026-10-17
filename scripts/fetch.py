@@ -232,12 +232,14 @@ def fetch_jobs(company: dict):
             live.append(typ)
         except Exception as e:  # noqa: BLE001
             errors.append(f"jobs {typ}{'/' + cfg.get('site', '') if cfg.get('site') else ''}: {str(e)[:120]}")
+    today = JS.today_kst()
     seen, out = set(), []
-    # 게시일 최신순, 게시일 없는 공고는 뒤로
+    # 게시일 최신순, 게시일 없는 공고는 뒤로. 지난 마감·마감 표시는 버린다.
     for j in sorted(items, key=lambda x: (1 if x.get("posted") else 0, x.get("posted") or ""), reverse=True):
-        if not j.get("title") or j["link"] in seen:
+        if not j.get("title") or j["link"] in seen or not JS.is_open(j, today):
             continue
         seen.add(j["link"])
+        j.pop("closed", None)
         out.append(j)
     return out[:JOBS_PER_COMPANY], errors, live
 
@@ -270,7 +272,8 @@ def process(company: dict, prev: dict) -> dict:
         if live:
             out["jobs"], out["jobs_live"] = jobs, True
         else:
-            out["jobs"], out["jobs_live"], out["jobs_stale"] = old.get("jobs", []), bool(old.get("jobs")), True
+            stale = [j for j in old.get("jobs", []) if JS.is_open(j)]
+            out["jobs"], out["jobs_live"], out["jobs_stale"] = stale, bool(stale), True
         out["errors"] += jerr
     else:
         out["jobs"], out["jobs_live"] = [], False
