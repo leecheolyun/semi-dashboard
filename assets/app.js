@@ -198,13 +198,18 @@
     return m ? `~${Number(m[2])}/${Number(m[3])} 마감` : "";
   };
   const segName = (id) => (state.data.segments.find((s) => s.id === id) || {}).name || "";
-  const dateLabel = (d) => {
-    if (!d) return "";
+  const relDate = (d) => {
     const days = Math.round((Date.now() - new Date(d + "T00:00:00+09:00").getTime()) / 86400000);
-    if (days <= 0) return '<span class="new">오늘</span>';
-    if (days === 1) return '<span class="new">어제</span>';
-    if (days < 30) return `${days}일 전`;
-    return d;
+    if (days <= 0) return { text: "오늘", fresh: true };
+    if (days === 1) return { text: "어제", fresh: true };
+    if (days < 30) return { text: `${days}일 전`, fresh: false };
+    return { text: d, fresh: false };
+  };
+  const postedLabel = (j) => {
+    if (!j.posted) return "";
+    const { text, fresh } = relDate(j.posted);
+    const label = j.title_from_url ? `갱신 ${text}` : j.posted_approx ? `게시 ${text} 이전` : `게시 ${text}`;
+    return fresh ? `<span class="new">${label}</span>` : label;
   };
 
   function jobCompanies() {
@@ -238,7 +243,7 @@
           <div class="jk">${esc(j.source)}${j.kind ? " · " + esc(j.kind) : ""}${j.title_from_url ? " · 제목은 URL 기준" : ""}</div></div>
         <div><button class="tag" data-jobco="${esc(j.c.id)}">${esc(j.c.name)}</button> <span class="muted" style="font-size:11px">${esc(segName(j.c.segment))}</span></div>
         <div class="jl">${esc(j.location || "-")}</div>
-        <div class="jd">${[j.posted ? (j.title_from_url ? `갱신 ${dateLabel(j.posted)}` : j.posted_approx ? `${dateLabel(j.posted)} 이전` : dateLabel(j.posted)) : "", j.deadline ? deadlineLabel(j.deadline) : ""].filter(Boolean).join("<br>") || "-"}</div>
+        <div class="jd">${[postedLabel(j), j.deadline ? deadlineLabel(j.deadline) : `<span class="unk">마감일 미공개</span>`].filter(Boolean).join("<br>")}</div>
       </div>`).join("") + (rows.length > shown.length ? `<button class="job-more" data-jobmore="1">더 보기 (${rows.length - shown.length}건 남음)</button>` : "")
       : `<div class="empty">조건에 맞는 공고가 없습니다. 아래 공식 채용 페이지를 확인하세요.</div>`;
     const noFeed = cos.filter((c) => !openJobs(c).length && (state.jobCo === "all" || c.id === state.jobCo));

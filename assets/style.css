@@ -143,13 +143,14 @@ body[data-view="news"] .not-news{display:none}
 .chips.kw .chip{font-size:12px;padding:4px 10px}
 .chips.kw .lbl{font-size:12px;color:var(--muted);align-self:center;margin-right:2px}
 .job-table{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-.job-row{display:grid;grid-template-columns:minmax(0,1fr) 170px 200px 110px;gap:12px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line)}
+.job-row{display:grid;grid-template-columns:minmax(0,1fr) 160px 180px 140px;gap:12px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line)}
 .job-row:last-child{border-bottom:0}
 .job-row.head{font-size:12px;color:var(--muted);background:var(--panel-2);padding:8px 16px}
 .job-row .jt{font-weight:600;font-size:14px;line-height:1.4}
 .job-row .jk{font-size:11.5px;color:var(--muted);margin-top:2px}
 .job-row .jl,.job-row .jd{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .job-row .jd .new{color:var(--up);font-weight:700}
+.job-row .jd .unk{color:var(--muted)}
 .job-more{display:block;width:100%;padding:12px;border:0;border-top:1px solid var(--line);background:none;color:var(--accent);font:inherit;font-size:13px;cursor:pointer}
 .career-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 .career{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:var(--shadow)}
