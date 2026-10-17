@@ -1,0 +1,308 @@
+{
+  "news_exclude": [
+    "shares of",
+    "stake in",
+    "position in",
+    "holdings increased",
+    "holdings decreased",
+    "holdings lifted",
+    "holdings trimmed",
+    "acquires new",
+    "sells shares",
+    "buys shares",
+    "stock position",
+    "shares sold by",
+    "shares bought by",
+    "operating expenses (excl",
+    "카지노",
+    "토토",
+    "룰렛",
+    "슬롯",
+    "바카라",
+    "배당표"
+  ],
+  "news_exclude_sources": [
+    "Calgary Roughnecks",
+    "씽크풀 AI"
+  ],
+  "segments": [
+    {
+      "id": "substrate",
+      "name": "기판/패키징",
+      "desc": "PCB · IC 기판(FC-BGA/BT) · 패키징"
+    },
+    {
+      "id": "memory",
+      "name": "메모리/종합",
+      "desc": "메모리 · IDM"
+    },
+    {
+      "id": "foundry",
+      "name": "파운드리/팹리스",
+      "desc": "파운드리 · 설계"
+    },
+    {
+      "id": "equipment",
+      "name": "장비/소재",
+      "desc": "전공정 · 후공정 장비"
+    }
+  ],
+  "companies": [
+    {
+      "id": "semco",
+      "name": "삼성전기",
+      "name_en": "Samsung Electro-Mechanics",
+      "segment": "substrate",
+      "region": "KR",
+      "ticker": "009150.KS",
+      "news_query": "삼성전기"
+    },
+    {
+      "id": "lginnotek",
+      "name": "LG이노텍",
+      "name_en": "LG Innotek",
+      "segment": "substrate",
+      "region": "KR",
+      "ticker": "011070.KS",
+      "news_query": "LG이노텍"
+    },
+    {
+      "id": "daeduck",
+      "name": "대덕전자",
+      "name_en": "Daeduck Electronics",
+      "segment": "substrate",
+      "region": "KR",
+      "ticker": "353200.KS",
+      "news_query": "대덕전자"
+    },
+    {
+      "id": "simmtech",
+      "name": "심텍",
+      "name_en": "Simmtech",
+      "segment": "substrate",
+      "region": "KR",
+      "ticker": "222800.KQ",
+      "news_query": "심텍 기판"
+    },
+    {
+      "id": "isupetasys",
+      "name": "이수페타시스",
+      "name_en": "ISU Petasys",
+      "segment": "substrate",
+      "region": "KR",
+      "ticker": "007660.KS",
+      "news_query": "이수페타시스"
+    },
+    {
+      "id": "korcirc",
+      "name": "코리아써키트",
+      "name_en": "Korea Circuit",
+      "segment": "substrate",
+      "region": "KR",
+      "ticker": "007810.KS",
+      "news_query": "코리아써키트"
+    },
+    {
+      "id": "haesungds",
+      "name": "해성디에스",
+      "name_en": "Haesung DS",
+      "segment": "substrate",
+      "region": "KR",
+      "ticker": "195870.KS",
+      "news_query": "해성디에스"
+    },
+    {
+      "id": "ibiden",
+      "name": "이비덴",
+      "name_en": "Ibiden",
+      "segment": "substrate",
+      "region": "GLOBAL",
+      "ticker": "4062.T",
+      "news_query": "Ibiden"
+    },
+    {
+      "id": "shinko",
+      "name": "신코전기",
+      "name_en": "Shinko Electric Industries",
+      "segment": "substrate",
+      "region": "GLOBAL",
+      "ticker": null,
+      "news_query": "\"Shinko Electric\"",
+      "note": "2025년 JIC 인수로 상장폐지 (6967.T 시세 없음) · 뉴스만 표시"
+    },
+    {
+      "id": "unimicron",
+      "name": "유니마이크론",
+      "name_en": "Unimicron",
+      "segment": "substrate",
+      "region": "GLOBAL",
+      "ticker": "3037.TW",
+      "news_query": "Unimicron"
+    },
+    {
+      "id": "nanyapcb",
+      "name": "난야PCB",
+      "name_en": "Nan Ya PCB",
+      "segment": "substrate",
+      "region": "GLOBAL",
+      "ticker": "8046.TW",
+      "news_query": "\"Nan Ya PCB\" OR \"Nan Ya Printed Circuit\""
+    },
+    {
+      "id": "kinsus",
+      "name": "킨서스",
+      "name_en": "Kinsus Interconnect",
+      "segment": "substrate",
+      "region": "GLOBAL",
+      "ticker": "3189.TW",
+      "news_query": "Kinsus"
+    },
+    {
+      "id": "zhending",
+      "name": "젠딩",
+      "name_en": "Zhen Ding Tech",
+      "segment": "substrate",
+      "region": "GLOBAL",
+      "ticker": "4958.TW",
+      "news_query": "\"Zhen Ding\""
+    },
+    {
+      "id": "ats",
+      "name": "AT&S",
+      "name_en": "AT&S",
+      "segment": "substrate",
+      "region": "GLOBAL",
+      "ticker": "ATS.VI",
+      "news_query": "\"AT&S\" substrate OR Austria"
+    },
+    {
+      "id": "ttm",
+      "name": "TTM 테크놀로지스",
+      "name_en": "TTM Technologies",
+      "segment": "substrate",
+      "region": "GLOBAL",
+      "ticker": "TTMI",
+      "news_query": "\"TTM Technologies\""
+    },
+    {
+      "id": "samsung",
+      "name": "삼성전자",
+      "name_en": "Samsung Electronics",
+      "segment": "memory",
+      "region": "KR",
+      "ticker": "005930.KS",
+      "news_query": "삼성전자 반도체"
+    },
+    {
+      "id": "skhynix",
+      "name": "SK하이닉스",
+      "name_en": "SK hynix",
+      "segment": "memory",
+      "region": "KR",
+      "ticker": "000660.KS",
+      "news_query": "SK하이닉스"
+    },
+    {
+      "id": "micron",
+      "name": "마이크론",
+      "name_en": "Micron",
+      "segment": "memory",
+      "region": "GLOBAL",
+      "ticker": "MU",
+      "news_query": "\"Micron Technology\""
+    },
+    {
+      "id": "intel",
+      "name": "인텔",
+      "name_en": "Intel",
+      "segment": "memory",
+      "region": "GLOBAL",
+      "ticker": "INTC",
+      "news_query": "Intel chip"
+    },
+    {
+      "id": "tsmc",
+      "name": "TSMC",
+      "name_en": "TSMC (ADR)",
+      "segment": "foundry",
+      "region": "GLOBAL",
+      "ticker": "TSM",
+      "alt_tickers": [
+        "2330.TW"
+      ],
+      "news_query": "TSMC"
+    },
+    {
+      "id": "nvidia",
+      "name": "엔비디아",
+      "name_en": "NVIDIA",
+      "segment": "foundry",
+      "region": "GLOBAL",
+      "ticker": "NVDA",
+      "news_query": "Nvidia"
+    },
+    {
+      "id": "amd",
+      "name": "AMD",
+      "name_en": "AMD",
+      "segment": "foundry",
+      "region": "GLOBAL",
+      "ticker": "AMD",
+      "news_query": "AMD chip"
+    },
+    {
+      "id": "qualcomm",
+      "name": "퀄컴",
+      "name_en": "Qualcomm",
+      "segment": "foundry",
+      "region": "GLOBAL",
+      "ticker": "QCOM",
+      "news_query": "Qualcomm"
+    },
+    {
+      "id": "asml",
+      "name": "ASML",
+      "name_en": "ASML",
+      "segment": "equipment",
+      "region": "GLOBAL",
+      "ticker": "ASML",
+      "news_query": "ASML"
+    },
+    {
+      "id": "amat",
+      "name": "어플라이드 머티리얼즈",
+      "name_en": "Applied Materials",
+      "segment": "equipment",
+      "region": "GLOBAL",
+      "ticker": "AMAT",
+      "news_query": "\"Applied Materials\""
+    },
+    {
+      "id": "lam",
+      "name": "램리서치",
+      "name_en": "Lam Research",
+      "segment": "equipment",
+      "region": "GLOBAL",
+      "ticker": "LRCX",
+      "news_query": "\"Lam Research\""
+    },
+    {
+      "id": "tel",
+      "name": "도쿄일렉트론",
+      "name_en": "Tokyo Electron",
+      "segment": "equipment",
+      "region": "GLOBAL",
+      "ticker": "8035.T",
+      "news_query": "\"Tokyo Electron\""
+    },
+    {
+      "id": "hanmi",
+      "name": "한미반도체",
+      "name_en": "Hanmi Semiconductor",
+      "segment": "equipment",
+      "region": "KR",
+      "ticker": "042700.KS",
+      "news_query": "한미반도체"
+    }
+  ]
+}

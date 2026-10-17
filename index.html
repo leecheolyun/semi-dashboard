@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>반도체 · 기판 대시보드</title>
+  <meta name="description" content="국내외 반도체·기판 주요 기업의 주가와 최신 뉴스를 한 곳에서">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔲</text></svg>">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>
+    (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;})();
+  </script>
+</head>
+<body data-view="companies">
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <div>
+          <h1>반도체 · 기판 대시보드</h1>
+          <p class="sub" id="updated">데이터 불러오는 중…</p>
+        </div>
+      </div>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="테마 전환" title="테마 전환">◐</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <nav class="tabs" role="tablist" aria-label="보기">
+      <button class="tab" role="tab" data-view="companies" id="tabCompanies">기업 대시보드</button>
+      <button class="tab" role="tab" data-view="news" id="tabNews">업계 뉴스 <span class="tab-n" id="topicTotal"></span></button>
+    </nav>
+
+    <section class="controls" aria-label="필터">
+      <div class="chips co-only" id="segChips" role="group" aria-label="세그먼트"></div>
+      <div class="chips news-only" id="topicChips" role="group" aria-label="토픽"></div>
+      <div class="controls-row">
+        <div class="chips" id="regionChips" role="group" aria-label="지역"></div>
+        <select class="co-only" id="sortSel" aria-label="정렬">
+          <option value="default">기본 순서</option>
+          <option value="chg_desc">등락률 높은 순</option>
+          <option value="chg_asc">등락률 낮은 순</option>
+          <option value="m3_desc">3개월 수익률 순</option>
+          <option value="news">최신 뉴스 순</option>
+        </select>
+        <label class="search">
+          <span aria-hidden="true">⌕</span>
+          <input id="q" type="search" placeholder="회사명 · 티커 · 뉴스 검색" autocomplete="off">
+        </label>
+      </div>
+    </section>
+
+    <section class="summary co-only" id="summary" aria-label="세그먼트 요약"></section>
+
+    <div class="layout co-only">
+      <section class="companies" id="companies" aria-label="기업"></section>
+      <aside class="feed" aria-label="통합 최신 뉴스">
+        <div class="feed-head">
+          <h2>통합 최신 뉴스</h2>
+          <span class="muted" id="feedCount"></span>
+        </div>
+        <ol class="feed-list" id="feed"></ol>
+      </aside>
+    </div>
+
+    <section class="topic-news news-only" aria-label="업계 뉴스">
+      <div class="seg-title"><h2 id="topicTitle">업계 뉴스</h2><span class="muted" id="topicCount"></span></div>
+      <ol class="tn-list" id="topicNews"></ol>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    시세: Yahoo Finance (지연 시세, 투자 판단용 아님) · 뉴스: Google 뉴스 RSS · 수 시간마다 자동 갱신
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+{
+  "per_topic": 20,
+  "window": "14d",
+  "topics": [
+    {
+      "id": "hbm",
+      "name": "HBM",
+      "queries": [
+        {
+          "lang": "ko",
+          "q": "HBM 메모리"
+        },
+        {
+          "lang": "en",
+          "q": "HBM memory"
+        }
+      ]
+    },
+    {
+      "id": "fcbga",
+      "name": "FC-BGA·반도체 기판",
+      "queries": [
+        {
+          "lang": "ko",
+          "q": "FC-BGA OR 반도체기판 OR \"반도체 기판\" OR 패키지기판"
+        },
+        {
+          "lang": "en",
+          "q": "\"FC-BGA\" OR \"ABF substrate\" OR \"IC substrate\""
+        }
+      ]
+    },
+    {
+      "id": "glass",
+      "name": "유리기판",
+      "queries": [
+        {
+          "lang": "ko",
+          "q": "유리기판 (반도체 OR 패키징 OR 기판)"
+        },
+        {
+          "lang": "en",
+          "q": "\"glass substrate\" (semiconductor OR packaging OR chip)"
+        }
+      ]
+    },
+    {
+      "id": "packaging",
+      "name": "첨단 패키징",
+      "queries": [
+        {
+          "lang": "ko",
+          "q": "첨단 패키징 OR CoWoS OR 하이브리드본딩"
+        },
+        {
+          "lang": "en",
+          "q": "CoWoS OR \"advanced packaging\" OR \"hybrid bonding\""
+        }
+      ]
+    },
+    {
+      "id": "equipment",
+      "name": "반도체 장비",
+      "queries": [
+        {
+          "lang": "ko",
+          "q": "반도체 장비"
+        },
+        {
+          "lang": "en",
+          "q": "\"semiconductor equipment\" OR \"chip equipment\" OR \"wafer fab equipment\""
+        }
+      ]
+    },
+    {
+      "id": "policy",
+      "name": "정책·수출규제",
+      "queries": [
+        {
+          "lang": "ko",
+          "q": "반도체 수출규제 OR 반도체 관세 OR 반도체특별법"
+        },
+        {
+          "lang": "en",
+          "q": "chip \"export controls\" OR semiconductor tariffs OR \"CHIPS Act\""
+        }
+      ]
+    },
+    {
+      "id": "aidemand",
+      "name": "AI 반도체 수요",
+      "queries": [
+        {
+          "lang": "ko",
+          "q": "AI 반도체 수요"
+        },
+        {
+          "lang": "en",
+          "q": "\"AI chip\" demand OR \"AI semiconductor\" demand"
+        }
+      ]
+    }
+  ]
+}
